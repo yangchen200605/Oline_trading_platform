@@ -1,0 +1,25 @@
+### 1. 员工登录
+POST http://localhost:8080/admin/employee/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "123456"
+}
+
+> {%
+    client.global.set("token", response.body.data.token);
+%}
+
+### 2. 新增员工（先跑上面登录，会自动带上 token）
+POST http://localhost:8080/admin/employee
+Content-Type: application/json
+token: {{token}}
+
+{
+  "username": "zhangsan",
+  "name": "张三",
+  "phone": "13800138000",
+  "sex": "1",
+  "idNumber": "110101199001011234"
+}
