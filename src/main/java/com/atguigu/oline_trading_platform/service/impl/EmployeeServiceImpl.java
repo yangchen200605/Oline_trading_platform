@@ -4,17 +4,21 @@ import com.atguigu.oline_trading_platform.common.JwtUtil;
 import com.atguigu.oline_trading_platform.common.context.BaseContext;
 import com.atguigu.oline_trading_platform.common.exception.BusinessException;
 import com.atguigu.oline_trading_platform.common.properties.JwtProperties;
+import com.atguigu.oline_trading_platform.common.properties.PageResult;
 import com.atguigu.oline_trading_platform.dto.EmployeeDTO;
 import com.atguigu.oline_trading_platform.dto.EmployeeLoginDTO;
+import com.atguigu.oline_trading_platform.dto.EmployeePageQueryDTO;
 import com.atguigu.oline_trading_platform.entity.Employee;
 import com.atguigu.oline_trading_platform.mapper.EmployeeMapper;
 import com.atguigu.oline_trading_platform.service.EmployeeService;
 import com.atguigu.oline_trading_platform.vo.EmployeeLoginVO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -83,5 +87,50 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateUser(BaseContext.getCurrentId());
 
         employeeMapper.insert(employee);
+    }
+
+    @Override
+    public PageResult page(EmployeePageQueryDTO employeePageQueryDTO) {
+        Page<Employee> page = new Page<>(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+
+        LambdaQueryWrapper<Employee> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.hasText(employeePageQueryDTO.getName()),
+                Employee::getName, employeePageQueryDTO.getName());
+        wrapper.orderByDesc(Employee::getCreateTime);
+
+        employeeMapper.selectPage(page, wrapper);
+        page.getRecords().forEach(employee -> employee.setPassword(null));
+
+        return new PageResult(page.getTotal(), page.getRecords());
+    }
+
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        Employee employee = Employee.builder()
+                .id(id)
+                .status(status)
+                .updateTime(LocalDateTime.now())
+                .updateUser(BaseContext.getCurrentId())
+                .build();
+        employeeMapper.updateById(employee);
+    }
+
+    @Override
+    public Employee getById(Long id) {
+        Employee employee = employeeMapper.selectById(id);
+        if (employee == null) {
+            throw new BusinessException("员工不存在");
+        }
+        employee.setPassword(null);
+        return employee;
+    }
+
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.updateById(employee);
     }
 }

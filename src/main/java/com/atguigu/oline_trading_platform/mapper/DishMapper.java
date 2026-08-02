@@ -1,0 +1,7 @@
+package com.atguigu.oline_trading_platform.mapper;
+
+import com.atguigu.oline_trading_platform.entity.Dish;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+public interface DishMapper extends BaseMapper<Dish> {
+}

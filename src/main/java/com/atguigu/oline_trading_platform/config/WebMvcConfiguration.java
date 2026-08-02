@@ -1,9 +1,11 @@
 package com.atguigu.oline_trading_platform.config;
 
 import com.atguigu.oline_trading_platform.interceptor.JwtTokenAdminInterceptor;
+import com.atguigu.oline_trading_platform.interceptor.JwtTokenUserInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -11,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
+    private final JwtTokenUserInterceptor jwtTokenUserInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -24,5 +27,15 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                         "/swagger-ui/**",
                         "/swagger-ui.html"
                 );
+
+        registry.addInterceptor(jwtTokenUserInterceptor)
+                .addPathPatterns("/user/**")
+                .excludePathPatterns("/user/user/login");
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:uploads/");
     }
 }

@@ -53,7 +53,7 @@ oline:
     admin-ttl: 7200000
     admin-token-name: token
     # 用户端 JWT
-    user-secret-key: oline-user-secret-key-change-me
+    user-secret-key: oline-user-secret-key-change-me-32b
     user-ttl: 7200000
     user-token-name: authentication
   # 阿里云 OSS（后续上传图片用，按实际账号填写）

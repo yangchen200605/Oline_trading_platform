@@ -3,9 +3,11 @@ package com.atguigu.oline_trading_platform;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @MapperScan("com.atguigu.oline_trading_platform.mapper")
+@EnableTransactionManagement
 public class OlineTradingPlatformApplication {
 
 	public static void main(String[] args) {
