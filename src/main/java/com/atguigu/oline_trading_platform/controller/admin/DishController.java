@@ -6,6 +6,7 @@ import com.atguigu.oline_trading_platform.dto.DishDTO;
 import com.atguigu.oline_trading_platform.dto.DishPageQueryDTO;
 import com.atguigu.oline_trading_platform.entity.Dish;
 import com.atguigu.oline_trading_platform.service.DishService;
+import com.atguigu.oline_trading_platform.vo.DishVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/dish")
@@ -41,8 +44,13 @@ public class DishController {
         return Result.success();
     }
 
+    @GetMapping("/list")
+    public Result<List<Dish>> list(@RequestParam Long categoryId) {
+        return Result.success(dishService.list(categoryId));
+    }
+
     @GetMapping("/{id}")
-    public Result<Dish> getById(@PathVariable Long id) {
+    public Result<DishVO> getById(@PathVariable Long id) {
         return Result.success(dishService.getById(id));
     }
 

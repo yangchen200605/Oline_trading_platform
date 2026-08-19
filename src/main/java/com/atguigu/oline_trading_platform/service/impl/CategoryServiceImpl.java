@@ -7,8 +7,10 @@ import com.atguigu.oline_trading_platform.dto.CategoryDTO;
 import com.atguigu.oline_trading_platform.dto.CategoryPageQueryDTO;
 import com.atguigu.oline_trading_platform.entity.Category;
 import com.atguigu.oline_trading_platform.entity.Dish;
+import com.atguigu.oline_trading_platform.entity.Setmeal;
 import com.atguigu.oline_trading_platform.mapper.CategoryMapper;
 import com.atguigu.oline_trading_platform.mapper.DishMapper;
+import com.atguigu.oline_trading_platform.mapper.SetmealMapper;
 import com.atguigu.oline_trading_platform.service.CategoryService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,6 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryMapper categoryMapper;
     private final DishMapper dishMapper;
+    private final SetmealMapper setmealMapper;
 
     @Override
     public void save(CategoryDTO categoryDTO) {
@@ -80,6 +83,11 @@ public class CategoryServiceImpl implements CategoryService {
                 new LambdaQueryWrapper<Dish>().eq(Dish::getCategoryId, id));
         if (count != null && count > 0) {
             throw new BusinessException("当前分类下有菜品，不能删除");
+        }
+        Long setmealCount = setmealMapper.selectCount(
+                new LambdaQueryWrapper<Setmeal>().eq(Setmeal::getCategoryId, id));
+        if (setmealCount != null && setmealCount > 0) {
+            throw new BusinessException("当前分类下有套餐，不能删除");
         }
         categoryMapper.deleteById(id);
     }

@@ -21,13 +21,17 @@ spring:
       database: 0
       timeout: 5000ms
 
-  # RabbitMQ（当前 pom 已引入，暂未使用可先保留）
+  # RabbitMQ（未启动时可把 oline.rabbitmq.enabled 设为 false）
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
     virtual-host: /
+    listener:
+      simple:
+        missing-queues-fatal: false
+        auto-startup: ${oline.rabbitmq.enabled:true}
 
   # 文件上传限制
   servlet:
@@ -62,6 +66,9 @@ oline:
     access-key-id: your-access-key-id
     access-key-secret: your-access-key-secret
     bucket-name: your-bucket-name
+  # 未支付订单超时取消依赖 MQ；本机未启动 RabbitMQ 时请改为 false，仍可由每分钟定时任务兜底
+  rabbitmq:
+    enabled: false
 
 # 日志
 logging:

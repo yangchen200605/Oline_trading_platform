@@ -8,6 +8,7 @@ import com.atguigu.oline_trading_platform.common.properties.PageResult;
 import com.atguigu.oline_trading_platform.dto.EmployeeDTO;
 import com.atguigu.oline_trading_platform.dto.EmployeeLoginDTO;
 import com.atguigu.oline_trading_platform.dto.EmployeePageQueryDTO;
+import com.atguigu.oline_trading_platform.dto.PasswordEditDTO;
 import com.atguigu.oline_trading_platform.entity.Employee;
 import com.atguigu.oline_trading_platform.mapper.EmployeeMapper;
 import com.atguigu.oline_trading_platform.service.EmployeeService;
@@ -132,5 +133,31 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateTime(LocalDateTime.now());
         employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.updateById(employee);
+    }
+
+    @Override
+    public void editPassword(PasswordEditDTO passwordEditDTO) {
+        if (passwordEditDTO == null
+                || !StringUtils.hasText(passwordEditDTO.getOldPassword())
+                || !StringUtils.hasText(passwordEditDTO.getNewPassword())) {
+            throw new BusinessException("原密码和新密码不能为空");
+        }
+        Employee employee = employeeMapper.selectById(BaseContext.getCurrentId());
+        if (employee == null) {
+            throw new BusinessException("员工不存在");
+        }
+        String oldMd5 = DigestUtils.md5DigestAsHex(
+                passwordEditDTO.getOldPassword().getBytes(StandardCharsets.UTF_8));
+        if (!oldMd5.equals(employee.getPassword())) {
+            throw new BusinessException("原密码错误");
+        }
+        Employee update = Employee.builder()
+                .id(employee.getId())
+                .password(DigestUtils.md5DigestAsHex(
+                        passwordEditDTO.getNewPassword().getBytes(StandardCharsets.UTF_8)))
+                .updateTime(LocalDateTime.now())
+                .updateUser(BaseContext.getCurrentId())
+                .build();
+        employeeMapper.updateById(update);
     }
 }

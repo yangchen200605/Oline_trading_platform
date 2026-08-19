@@ -246,6 +246,209 @@ authentication: {{userToken}}
   "tablewareStatus": 1
 }
 
-### 34. 模拟支付（把 id 换成订单 id）
+### 34. 模拟支付（把 id 换成订单 id；管理端需先连 ws://localhost:8080/ws/order）
 PUT http://localhost:8080/user/order/payment/1
 authentication: {{userToken}}
+
+### 35. 用户催单（订单需已支付，状态为待接单/已接单）
+PUT http://localhost:8080/user/order/reminder/1
+authentication: {{userToken}}
+
+### 36. 历史订单
+GET http://localhost:8080/user/order/historyOrders?page=1&pageSize=10
+authentication: {{userToken}}
+
+### 37. 订单详情
+GET http://localhost:8080/user/order/orderDetail/1
+authentication: {{userToken}}
+
+### 38. 取消订单
+PUT http://localhost:8080/user/order/cancel/1
+authentication: {{userToken}}
+
+### 39. 再来一单（明细加回购物车）
+POST http://localhost:8080/user/order/repetition/1
+authentication: {{userToken}}
+
+### 40. 店铺营业状态（1营业 0打烊，无需登录）
+GET http://localhost:8080/user/shop/status
+
+### 41. 用户端套餐列表（categoryId 换成套餐分类 id）
+GET http://localhost:8080/user/setmeal/list?categoryId=2
+authentication: {{userToken}}
+
+### ========== 管理端订单 ==========
+
+### 42. 订单分页
+GET http://localhost:8080/admin/order/page?page=1&pageSize=10
+token: {{token}}
+
+### 43. 各状态数量
+GET http://localhost:8080/admin/order/statistics
+token: {{token}}
+
+### 44. 订单详情
+GET http://localhost:8080/admin/order/details/1
+token: {{token}}
+
+### 45. 接单
+PUT http://localhost:8080/admin/order/confirm/1
+token: {{token}}
+
+### 46. 拒单
+PUT http://localhost:8080/admin/order/rejection
+Content-Type: application/json
+token: {{token}}
+
+{
+  "id": 1,
+  "rejectionReason": "菜品售罄"
+}
+
+### 47. 派送
+PUT http://localhost:8080/admin/order/delivery/1
+token: {{token}}
+
+### 48. 完成
+PUT http://localhost:8080/admin/order/complete/1
+token: {{token}}
+
+### 49. 商家取消
+PUT http://localhost:8080/admin/order/cancel
+Content-Type: application/json
+token: {{token}}
+
+{
+  "id": 1,
+  "cancelReason": "无法配送"
+}
+
+### ========== 套餐 / 口味 / 店铺 / 报表 ==========
+
+### 50. 新增菜品（带口味）
+POST http://localhost:8080/admin/dish
+Content-Type: application/json
+token: {{token}}
+
+{
+  "name": "水煮鱼",
+  "categoryId": 1,
+  "price": 48.00,
+  "image": "",
+  "description": "鲜嫩麻辣",
+  "flavors": [
+    {"name": "辣度", "value": "[\"微辣\",\"中辣\",\"重辣\"]"}
+  ]
+}
+
+### 51. 按分类查起售菜品（套餐勾选用）
+GET http://localhost:8080/admin/dish/list?categoryId=1
+token: {{token}}
+
+### 52. 新增套餐分类
+POST http://localhost:8080/admin/category
+Content-Type: application/json
+token: {{token}}
+
+{
+  "type": 2,
+  "name": "超值套餐",
+  "sort": 10
+}
+
+### 53. 新增套餐（dishId 换成真实菜品 id）
+POST http://localhost:8080/admin/setmeal
+Content-Type: application/json
+token: {{token}}
+
+{
+  "categoryId": 2,
+  "name": "双人套餐",
+  "price": 68.00,
+  "description": "两荤一素",
+  "image": "",
+  "setmealDishes": [
+    {"dishId": 1, "copies": 1},
+    {"dishId": 2, "copies": 1}
+  ]
+}
+
+### 54. 套餐分页
+GET http://localhost:8080/admin/setmeal/page?page=1&pageSize=10
+token: {{token}}
+
+### 55. 套餐起售
+POST http://localhost:8080/admin/setmeal/status/1?id=1
+token: {{token}}
+
+### 56. 套餐详情
+GET http://localhost:8080/admin/setmeal/1
+token: {{token}}
+
+### 57. 购物车加入套餐
+POST http://localhost:8080/user/shoppingCart/add
+Content-Type: application/json
+authentication: {{userToken}}
+
+{
+  "setmealId": 1
+}
+
+### 58. 设置店铺营业
+PUT http://localhost:8080/admin/shop/1
+token: {{token}}
+
+### 59. 设置店铺打烊
+PUT http://localhost:8080/admin/shop/0
+token: {{token}}
+
+### 60. 管理端查看营业状态
+GET http://localhost:8080/admin/shop/status
+token: {{token}}
+
+### 61. 今日营业数据
+GET http://localhost:8080/admin/workspace/businessData
+token: {{token}}
+
+### 62. 订单总览
+GET http://localhost:8080/admin/workspace/overviewOrders
+token: {{token}}
+
+### 63. 菜品总览
+GET http://localhost:8080/admin/workspace/overviewDishes
+token: {{token}}
+
+### 64. 套餐总览
+GET http://localhost:8080/admin/workspace/overviewSetmeals
+token: {{token}}
+
+### 65. 营业额统计
+GET http://localhost:8080/admin/report/turnoverStatistics?begin=2026-08-01&end=2026-08-19
+token: {{token}}
+
+### 66. 用户统计
+GET http://localhost:8080/admin/report/userStatistics?begin=2026-08-01&end=2026-08-19
+token: {{token}}
+
+### 67. 订单统计
+GET http://localhost:8080/admin/report/ordersStatistics?begin=2026-08-01&end=2026-08-19
+token: {{token}}
+
+### 68. 销量 Top10
+GET http://localhost:8080/admin/report/top10?begin=2026-08-01&end=2026-08-19
+token: {{token}}
+
+### 69. 导出近30天运营报表
+GET http://localhost:8080/admin/report/export
+token: {{token}}
+
+### 70. 修改密码
+PUT http://localhost:8080/admin/employee/password
+Content-Type: application/json
+token: {{token}}
+
+{
+  "oldPassword": "123456",
+  "newPassword": "654321"
+}
+

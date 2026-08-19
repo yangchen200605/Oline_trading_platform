@@ -5,6 +5,7 @@ import com.atguigu.oline_trading_platform.common.properties.PageResult;
 import com.atguigu.oline_trading_platform.dto.EmployeeDTO;
 import com.atguigu.oline_trading_platform.dto.EmployeeLoginDTO;
 import com.atguigu.oline_trading_platform.dto.EmployeePageQueryDTO;
+import com.atguigu.oline_trading_platform.dto.PasswordEditDTO;
 import com.atguigu.oline_trading_platform.entity.Employee;
 import com.atguigu.oline_trading_platform.service.EmployeeService;
 import com.atguigu.oline_trading_platform.vo.EmployeeLoginVO;
@@ -60,6 +61,12 @@ public class EmployeeController {
     @PutMapping
     public Result<Void> update(@RequestBody EmployeeDTO employeeDTO) {
         employeeService.update(employeeDTO);
+        return Result.success();
+    }
+
+    @PutMapping("/password")
+    public Result<Void> editPassword(@RequestBody PasswordEditDTO passwordEditDTO) {
+        employeeService.editPassword(passwordEditDTO);
         return Result.success();
     }
 }

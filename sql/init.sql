@@ -57,6 +57,42 @@ CREATE TABLE dish (
     INDEX idx_category_id (category_id)
 ) COMMENT '菜品表';
 
+-- 菜品口味
+CREATE TABLE dish_flavor (
+    id      BIGINT PRIMARY KEY AUTO_INCREMENT,
+    dish_id BIGINT       NOT NULL,
+    name    VARCHAR(32)  DEFAULT NULL COMMENT '口味名称，如辣度',
+    value   VARCHAR(255) DEFAULT NULL COMMENT '口味选项 JSON，如 ["微辣","中辣"]',
+    INDEX idx_dish_id (dish_id)
+) COMMENT '菜品口味';
+
+-- 套餐
+CREATE TABLE setmeal (
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    category_id BIGINT        NOT NULL,
+    name        VARCHAR(32)   NOT NULL,
+    price       DECIMAL(10,2) NOT NULL,
+    status      TINYINT       NOT NULL DEFAULT 1 COMMENT '1起售 0停售',
+    description VARCHAR(255)  DEFAULT NULL,
+    image       VARCHAR(500)  DEFAULT NULL,
+    create_time DATETIME      DEFAULT NULL,
+    update_time DATETIME      DEFAULT NULL,
+    create_user BIGINT        DEFAULT NULL,
+    update_user BIGINT        DEFAULT NULL,
+    INDEX idx_category_id (category_id)
+) COMMENT '套餐';
+
+-- 套餐菜品关系
+CREATE TABLE setmeal_dish (
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
+    setmeal_id BIGINT        DEFAULT NULL,
+    dish_id    BIGINT        DEFAULT NULL,
+    name      VARCHAR(32)   DEFAULT NULL,
+    price     DECIMAL(10,2) DEFAULT NULL,
+    copies    INT           DEFAULT NULL COMMENT '份数',
+    INDEX idx_setmeal_id (setmeal_id)
+) COMMENT '套餐菜品关系';
+
 -- 购物车
 CREATE TABLE shopping_cart (
     id          BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -64,6 +100,7 @@ CREATE TABLE shopping_cart (
     image       VARCHAR(500) DEFAULT NULL,
     user_id     BIGINT       NOT NULL,
     dish_id     BIGINT       DEFAULT NULL,
+    setmeal_id  BIGINT       DEFAULT NULL,
     dish_flavor VARCHAR(50)  DEFAULT NULL,
     number      INT          NOT NULL DEFAULT 1,
     amount      DECIMAL(10,2) NOT NULL,
@@ -108,6 +145,7 @@ CREATE TABLE order_detail (
     image       VARCHAR(500) DEFAULT NULL,
     order_id    BIGINT       NOT NULL,
     dish_id     BIGINT       DEFAULT NULL,
+    setmeal_id  BIGINT       DEFAULT NULL,
     dish_flavor VARCHAR(50)  DEFAULT NULL,
     number      INT          NOT NULL DEFAULT 1,
     amount      DECIMAL(10,2) NOT NULL,

@@ -20,6 +20,7 @@ public class ShoppingCart implements Serializable {
     private String image;
     private Long userId;
     private Long dishId;
+    private Long setmealId;
     private String dishFlavor;
     private Integer number;
     private BigDecimal amount;

@@ -4,6 +4,7 @@ import com.atguigu.oline_trading_platform.common.properties.PageResult;
 import com.atguigu.oline_trading_platform.dto.EmployeeDTO;
 import com.atguigu.oline_trading_platform.dto.EmployeeLoginDTO;
 import com.atguigu.oline_trading_platform.dto.EmployeePageQueryDTO;
+import com.atguigu.oline_trading_platform.dto.PasswordEditDTO;
 import com.atguigu.oline_trading_platform.entity.Employee;
 import com.atguigu.oline_trading_platform.vo.EmployeeLoginVO;
 
@@ -20,4 +21,6 @@ public interface EmployeeService {
     Employee getById(Long id);
 
     void update(EmployeeDTO employeeDTO);
+
+    void editPassword(PasswordEditDTO passwordEditDTO);
 }
